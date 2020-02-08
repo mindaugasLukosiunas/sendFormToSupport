@@ -35,6 +35,7 @@ namespace EVBoxSubmitForm
         public void NavigateToPage(string menuSection, string menuSubsection = "")
         {
             var menuItem = _driver.FindElement(By.XPath(String.Format("//*[contains(text(), '{0}')]", menuSection)));
+            ScrollToElement(menuItem);
 
             if (String.IsNullOrEmpty(menuSubsection))
             {

@@ -27,6 +27,29 @@ namespace EVBoxSubmitForm
             _utils = new Utils(_driver);
         }
 
+        /*In order to submit the form you need to disable CAPTCHA.
+         You can whitelist IP or domain, or even query a 3rd party API to resolve it,
+         but this is out of scope for this task. So can not really submit it from my home network.*/
+        public void ClickSendButton()
+        {
+            var element = _driver.FindElement(By.XPath(xpath_sendButton));
+            _utils.ScrollToElement(element);
+            element.Click();
+            _utils.WaitForPageToFullyLoad();
+        }
+
+        /*Could also check if submission GUID in URL exists and is not empty or null after submitting the form,
+        but I'll keep it simple. */
+        public bool VerifySuccessMessageIsShown(string message)
+        {
+            var element = By.XPath(xpath_successMessageHeader);
+            _wait.Until(ExpectedConditions.ElementIsVisible(element));
+
+            return _driver.FindElement(element)
+                .GetAttribute("text")
+                .Contains(message);
+        }
+
         public void EnterFirstname(string firstname)
         {
             var element = _driver.FindElement(By.Name(name_supportFormFirstNameInput));
@@ -64,29 +87,6 @@ namespace EVBoxSubmitForm
             _utils.ScrollToElement(element);
             element.Clear();
             element.SendKeys(message);
-        }
-
-        /*In order to submit the form you need to disable CAPTCHA.
-         You can whitelist IP or domain, or even query a 3rd party API to resolve it,
-         but this is out of scope for this task. So can not really submit the from my home network.*/
-        public void ClickSendButton()
-        {
-            var element = _driver.FindElement(By.XPath(xpath_sendButton));
-            _utils.ScrollToElement(element);
-            element.Click();
-            _utils.WaitForPageToFullyLoad();
-        }
-
-        /*Could also check if submission GUID in URL exists and is not empty or null after submitting the form,
-        but I'll keep it simple. */
-        public bool VerifySuccessMessageIsShown(string message)
-        {
-            var element = By.XPath(xpath_successMessageHeader);           
-            _wait.Until(ExpectedConditions.ElementIsVisible(element));
-
-            return _driver.FindElement(element)
-                .GetAttribute("text")
-                .Contains(message);
         }
 
         private void EnterPostalCode(string zip)
